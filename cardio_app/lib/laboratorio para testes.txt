@@ -1,0 +1,102 @@
+
+
+/*import 'package:flutter/material.dart';
+
+main() => runApp(const CardioApp());
+
+void teste() {
+  // ignore: avoid_print
+  print('TESTE');
+}
+
+int idade = 0;
+int psAnemia = 2;
+int opSex = 2;
+int localDor = 5;
+
+class CardioApp extends StatefulWidget {
+  const CardioApp({super.key});
+
+  @override
+  State<CardioApp> createState() => _CardioAppState();
+}
+
+class _CardioAppState extends State<CardioApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 126, 0, 0),
+              title: const Center(
+                  child: Text('Previsão de Insuficiência Cardíaca'))),
+          body: Center(
+            child: Column(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                const Text(''),
+                Container(
+                    margin: const EdgeInsets.only(left: 0.0, right: 300.0),
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text('Idade: $idade')),
+                Slider(
+                  activeColor: const Color.fromARGB(255, 197, 2, 2),
+                  inactiveColor: const Color.fromARGB(255, 255, 131, 131),
+                  value: idade.toDouble(),
+                  min: 0.0,
+                  max: 110.0,
+                  onChanged: (double novaIdade) =>
+                      setState(() => idade = novaIdade.round()),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(left: 0.0, right: 323.0),
+                    padding: const EdgeInsets.all(2.0),
+                    child: const Text('Sexo:')),
+                RadioListTile(
+                  title: const Text('Masculino'),
+                  subtitle: const Text('Selecione uma opção'),
+                  activeColor: const Color.fromARGB(255, 197, 2, 2),
+                  value: 1,
+                  groupValue: opSex,
+                  onChanged: (int? valorSex) =>
+                      setState(() => opSex = valorSex!),
+                ),
+                RadioListTile(
+                  title: const Text('Feminino'),
+                  subtitle: const Text('Selecione uma opção'),
+                  activeColor: const Color.fromARGB(255, 197, 2, 2),
+                  value: 0,
+                  groupValue: opSex,
+                  onChanged: (int? valorSex) =>
+                      setState(() => opSex = valorSex!),
+                ),
+                const Text(''),
+                Container(
+                    margin: const EdgeInsets.only(left: 0.0, right: 300.0),
+                    padding: const EdgeInsets.all(2.0),
+                    child: const Text('Anemia:')),
+                RadioListTile(
+                  title: const Text('Sim'),
+                  subtitle: const Text('Possui anemia'),
+                  activeColor: const Color.fromARGB(255, 197, 2, 2),
+                  value: 1,
+                  groupValue: psAnemia,
+                  onChanged: (int? valorAnemia) =>
+                      setState(() => psAnemia = valorAnemia!),
+                ),
+                RadioListTile(
+                  title: const Text('Não'),
+                  subtitle: const Text('Não possui anemia'),
+                  activeColor: const Color.fromARGB(255, 197, 2, 2),
+                  value: 0,
+                  groupValue: psAnemia,
+                  onChanged: (int? valorAnemia) =>
+                      setState(() => psAnemia = valorAnemia!),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}
+*/
