@@ -1,4 +1,14 @@
-
+    void apiTrain() async {
+      final response = await http.post(
+        Uri.parse('http://192.168.0.107:5000/api/v1/classification/train'),
+        body: {'files': await file!.readAsString()},
+        headers: {
+          'target': 'DEATH_EVENT',
+        },
+      );
+      var id = response.toString();
+      print(id);
+    }
 
 /*import 'package:flutter/material.dart';
 
