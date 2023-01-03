@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/widgets.dart';
-import 'dart:io' as Io;
+//import 'package:flutter/widgets.dart';
+import 'dart:io' as io;
 
 main() => runApp(const CardioApp());
+
+Uint8List base64Decode(String source) => base64.decode(source);
 
 void teste() {
   // ignore: avoid_print
@@ -24,19 +25,27 @@ class CardioApp extends StatefulWidget {
 
 class _CardioAppState extends State<CardioApp> {
   File? file;
-  var id;
+  // ignore: prefer_typing_uninitialized_variables
+  String? id;
+
   @override
   Widget build(BuildContext context) {
     void apiTrain() async {
-      Response response;
       var dio = Dio();
-      response = await dio.post(
+      final files = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file!.path,
+            filename: file!.uri.pathSegments.last)
+      });
+
+      final response = await dio.post(
           'http://192.168.0.107:5000/api/v1/classification/train',
           queryParameters: {
-            'files': await file!.readAsString(),
             'target': 'DEATH_EVENT',
-          });
+          },
+          data: files);
       id = response.toString();
+      // ignore: avoid_print
+      print(id);
     }
 
     void carregarArquivoTreinamento() async {
@@ -55,20 +64,27 @@ class _CardioAppState extends State<CardioApp> {
     }
 
     void apiPredicao() async {
-      Response response;
       var dio = Dio();
-      response = await dio.post(
-          'http://192.168.0.107:5000/api/v1/classification/{$id}/predict',
-          queryParameters: {
-            'files': await file!.readAsString(),
-            'paraments': 'DEATH_EVENT',
-          });
-      var imgBase64 = response.toString();
+      final files2 = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file!.path,
+            filename: file!.uri.pathSegments.last)
+      });
 
-      final splitted = imgBase64.substring(47, 25628);
-      final decodedBytes = base64Decode(splitted);
-      var file = Io.File("decodedBezkoder.png");
-      file.writeAsBytesSync(decodedBytes);
+      final response = await dio.post(
+          'http://192.168.0.107:5000/api/v1/classification/$id/predict',
+          queryParameters: {
+            'target': 'DEATH_EVENT',
+          },
+          data: files2);
+      var result = jsonDecode(response.toString());
+
+      print(response.toString());
+      var image = result["plot"];
+      print(image);
+
+      final decodedBytes = base64Decode(image);
+      var file4 = io.File("Plot.png");
+      await file4.writeAsBytes(decodedBytes);
     }
 
     void carregarArquivoPredicao() async {
@@ -77,6 +93,7 @@ class _CardioAppState extends State<CardioApp> {
       if (result != null) {
         setState(() {
           file = File(result.files.single.path!);
+          apiPredicao();
         });
         //FALTA TRATAMENTO PRA VERIFICAR .CSVV
 
@@ -114,7 +131,8 @@ class _CardioAppState extends State<CardioApp> {
                   subtitle: const Text(
                       'Formato deve ser .CSV para predição de valores'),
                   trailing: IconButton(
-                      onPressed: apiPredicao, icon: const Icon(Icons.add)),
+                      onPressed: carregarArquivoPredicao,
+                      icon: const Icon(Icons.add)),
                   iconColor: const Color.fromARGB(255, 126, 0, 0),
                 ),
               ),
