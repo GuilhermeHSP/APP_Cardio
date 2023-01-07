@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 //import 'package:flutter/widgets.dart';
-import 'dart:io' as io;
 
 main() => runApp(const CardioApp());
 
@@ -25,6 +24,8 @@ class CardioApp extends StatefulWidget {
 
 class _CardioAppState extends State<CardioApp> {
   File? file;
+  ImageProvider? imagemFinal;
+
   // ignore: prefer_typing_uninitialized_variables
   String? id;
 
@@ -76,15 +77,12 @@ class _CardioAppState extends State<CardioApp> {
             'target': 'DEATH_EVENT',
           },
           data: files2);
+
       var result = jsonDecode(response.toString());
 
-      print(response.toString());
-      var image = result["plot"];
-      print(image);
-
-      final decodedBytes = base64Decode(image);
-      var file4 = io.File("Plot.png");
-      await file4.writeAsBytes(decodedBytes);
+      setState(() {
+        imagemFinal = Image.memory(base64Decode(result['plot'])).image;
+      });
     }
 
     void carregarArquivoPredicao() async {
@@ -108,36 +106,42 @@ class _CardioAppState extends State<CardioApp> {
             backgroundColor: const Color.fromARGB(255, 126, 0, 0),
             title: const Center(
                 child: Text('Previsão de Insuficiência Cardíaca'))),
-        body: Center(
-          child: Column(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              const Text('\nTreinamento'),
-              Card(
-                child: ListTile(
-                  title: const Text('Carregar arquivo:'),
-                  subtitle:
-                      const Text('Formato deve ser .CSV para treino de modelo'),
-                  trailing: IconButton(
-                      onPressed: carregarArquivoTreinamento,
-                      icon: const Icon(Icons.add)),
-                  iconColor: const Color.fromARGB(255, 126, 0, 0),
-                ),
+        body: ListView(
+          children: [
+            Center(
+              child: Column(
+                // ignore: prefer_const_literals_to_create_immutables
+                children: [
+                  const Text('\nTreinamento'),
+                  Card(
+                    child: ListTile(
+                      title: const Text('Carregar arquivo:'),
+                      subtitle: const Text(
+                          'Formato deve ser .CSV para treino de modelo'),
+                      trailing: IconButton(
+                          onPressed: carregarArquivoTreinamento,
+                          icon: const Icon(Icons.add)),
+                      iconColor: const Color.fromARGB(255, 126, 0, 0),
+                    ),
+                  ),
+                  const Text('\nPredição'),
+                  Card(
+                    child: ListTile(
+                      title: const Text('Carregar arquivo:'),
+                      subtitle: const Text(
+                          'Formato deve ser .CSV para predição de valores'),
+                      trailing: IconButton(
+                          onPressed: carregarArquivoPredicao,
+                          icon: const Icon(Icons.add)),
+                      iconColor: const Color.fromARGB(255, 126, 0, 0),
+                    ),
+                  ),
+                  const Text('\nResultado\n'),
+                  imagemFinal != null ? Image(image: imagemFinal!) : Container()
+                ],
               ),
-              const Text('\nPredição'),
-              Card(
-                child: ListTile(
-                  title: const Text('Carregar arquivo:'),
-                  subtitle: const Text(
-                      'Formato deve ser .CSV para predição de valores'),
-                  trailing: IconButton(
-                      onPressed: carregarArquivoPredicao,
-                      icon: const Icon(Icons.add)),
-                  iconColor: const Color.fromARGB(255, 126, 0, 0),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
